@@ -22,18 +22,34 @@ namespace banking
                 { "X", "Exit banking menu" }
             };
 
-        // Maps banking options to relevant case handlers
-        static readonly Dictionary<string, Action<AccountHolder>> caseHandlerDictionary = new Dictionary<string, Action<AccountHolder>>()
+        /// <summary>
+        /// Maps banking options to relevant case handlers
+        /// </summary>
+        static readonly Dictionary<string, Action<AccountHolder, string>> caseHandlerDictionary = new Dictionary<string, Action<AccountHolder, string>>()
         {
             { "I", HandleCaseI },
-            { "CB", HandleCaseCB },
-            { "CD", HandleCaseCD },
-            { "CW", HandleCaseCW },
-            { "SB", HandleCaseSB },
-            { "SD", HandleCaseSD },
-            { "SW", HandleCaseSW },
+            { "CB", GetAccountBalance },
+            { "CD", DepositToAccount },
+            { "CW", WithdrawFromAccount },
+            { "SB", GetAccountBalance },
+            { "SD", DepositToAccount },
+            { "SW", WithdrawFromAccount },
         };
 
+        static readonly Dictionary<string, string> optionsToAccountTypeDictionary = new Dictionary<string, string>
+        {
+            {"I", "information" },
+            {"CB", "checking" },
+            {"CD", "checking" },
+            {"CW", "checking" },
+            {"SB", "savings" },
+            {"SD", "savings" },
+            {"SW", "savings" },
+        };
+
+        /// <summary>
+        /// Specifies the filepath to which logs are written.
+        /// </summary>
         static readonly string logFile = "log.txt";
 
         /// <summary>
@@ -103,7 +119,41 @@ namespace banking
             }
         }
 
-        private static void HandleCaseI(AccountHolder currentUser)
+        /// <summary>
+        /// Writes user, account type, operation type, and transaction amount to log file. 
+        /// </summary>
+        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
+        /// <param name="accountType">The account type.</param>
+        /// <param name="operationType">The type of operation.</param>
+        /// <param name="transactionAmount">The transaction amount.</param>
+        private static void WriteResultToFile(AccountHolder currentUser, string accountType, string operationType, decimal transactionAmount)
+        {
+            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
+            logMessage += $"{accountType.ToUpper()} ";
+            logMessage += $"{operationType} - {bankingOptions[operationType]} ";
+            logMessage += $"Transaction amount: ${transactionAmount}";
+
+            if (!File.Exists(logFile))
+            {
+                using (StreamWriter sw = File.CreateText("log.txt"))
+                {
+                    sw.WriteLine(logMessage);
+                }
+            }
+            else
+            {
+                using (StreamWriter sw = File.AppendText("log.txt"))
+                {
+                    sw.WriteLine(logMessage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles case "I" -- view account holder information
+        /// </summary>
+        /// <param name="currentUser">The current user, whose information will be viewed.</param>
+        private static void HandleCaseI(AccountHolder currentUser, string accountType)
         {
             Console.WriteLine();
             Console.WriteLine($"Viewing the account of {currentUser.LastName}, {currentUser.FirstName} with account #{currentUser.AccountNumber}");
@@ -112,9 +162,15 @@ namespace banking
             WriteResultToFile(currentUser, "I");
         }
 
-        private static void HandleCaseCB(AccountHolder currentUser)
+        private static void GetAccountBalance(AccountHolder currentUser, string accountType)
         {
-            BankingAccount currentAccount = currentUser.CheckingAccount;
+            BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
+
+            if (currentAccount == null)
+            {
+                Console.WriteLine("Error: invalid account type");
+                return;
+            }
 
             Console.WriteLine("");
             Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s checking account has a balance of {currentAccount.ViewBalance():c}");
@@ -123,78 +179,20 @@ namespace banking
             WriteResultToFile(currentUser, "CB");
         }
 
-        private static void HandleCaseCD(AccountHolder currentUser)
+        /// <summary>
+        /// Deposits a specified amount to the specified account type of the current user.
+        /// </summary>
+        /// <param name="currentUser">The current user, into whose account money will be deposited.</param>
+        /// <param name="accountType">The type of account into which to deposit.</param>
+        private static void DepositToAccount(AccountHolder currentUser, string accountType)
         {
-            BankingAccount currentAccount = currentUser.CheckingAccount;
+            BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
 
-            Console.WriteLine("");
-            Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s checking account. Please specify an amount:");
-            Console.Write("$");
-
-            decimal amountToDeposit = 0;
-
-            try
+            if (currentAccount == null)
             {
-                amountToDeposit = Decimal.Parse(Console.ReadLine());
+                Console.WriteLine("Error: invalid account type");
+                return;
             }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Input must consist wholly of numbers.");
-            }
-
-            currentAccount.DepositFunds(amountToDeposit);
-
-            WriteResultToFile(currentUser, "CD", amountToDeposit);
-        }
-
-        private static void HandleCaseCW(AccountHolder currentUser)
-        {
-            BankingAccount currentAccount = currentUser.CheckingAccount;
-
-            Console.WriteLine("");
-            Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s checking account. Please specify an amount:");
-            Console.Write("$");
-
-            decimal amountToWithdraw = 0;
-
-            try
-            {
-                amountToWithdraw = Decimal.Parse(Console.ReadLine());
-            }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Input must consist wholly of numbers.");
-            }
-
-            currentAccount.WithdrawFunds(amountToWithdraw);
-
-            WriteResultToFile(currentUser, "CW", amountToWithdraw);
-        }
-
-        private static void HandleCaseSB(AccountHolder currentUser)
-        {
-            BankingAccount currentAccount = currentUser.SavingsAccount;
-
-            Console.WriteLine("");
-            Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s savings account has a balance of {currentAccount.ViewBalance():c}");
-            Console.WriteLine("");
-
-            WriteResultToFile(currentUser, "SB");
-        }
-
-        private static void HandleCaseSD(AccountHolder currentUser)
-        {
-            BankingAccount currentAccount = currentUser.SavingsAccount;
 
             Console.WriteLine("");
             Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s savings account. Please specify an amount:");
@@ -221,9 +219,20 @@ namespace banking
             WriteResultToFile(currentUser, "SD", amountToDeposit);
         }
 
-        private static void HandleCaseSW(AccountHolder currentUser)
+        /// <summary>
+        /// Withdraws an amount from the specified account of the current user.
+        /// </summary>
+        /// <param name="currentUser">The current user, from whose account money will be withdrawn.</param>
+        /// <param name="accountType">The type of account from which to withdraw.</param>
+        private static void WithdrawFromAccount(AccountHolder currentUser, string accountType)
         {
-            BankingAccount currentAccount = currentUser.SavingsAccount;
+            BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
+
+            if (currentAccount == null)
+            {
+                Console.WriteLine("Error: invalid account type");
+                return;
+            }
 
             Console.WriteLine("");
             Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s savings account. Please specify an amount:");
@@ -233,7 +242,7 @@ namespace banking
 
             try
             {
-                amountToWithdraw = Decimal.Parse(Console.ReadLine());
+                amountToWithdraw = decimal.Parse(Console.ReadLine());
             }
             catch (OverflowException ex)
             {
@@ -247,30 +256,39 @@ namespace banking
 
             currentAccount.WithdrawFunds(amountToWithdraw);
 
-            WriteResultToFile(currentUser, "SW", amountToWithdraw);
+            WriteResultToFile(currentUser, accountType, "withdrawal", amountToWithdraw);
         }
 
-        private static void HandleCaseX(ref bool displayMenu)
+        /// <summary>
+        /// Exits the banking menu.
+        /// </summary>
+        /// <param name="displayMenu">References a bool that decides whether to show the menu.</param>
+        private static void ExitBankingMenu(ref bool displayMenu)
         {
             Console.WriteLine("Exiting banking menu.");
             displayMenu = false;
         }
 
+        /// <summary>
+        /// Handles user's menu choice.
+        /// </summary>
+        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
+        /// <param name="displayMenu">References a bool that decides whether to show the menu.</param>
         private static void HandleUserMenuChoice(AccountHolder currentUser, ref bool displayMenu)
         {
             string userInput = Console.ReadLine().ToUpper();
 
             if (bankingOptions.ContainsKey(userInput) && userInput != "X")
             {
-                caseHandlerDictionary[userInput](currentUser);
+                caseHandlerDictionary[userInput](currentUser, optionsToAccountTypeDictionary[userInput]);
             }
             else if (userInput == "X")
             {
-                HandleCaseX(ref displayMenu);
+                ExitBankingMenu(ref displayMenu);
             }
             else
             {
-                System.Console.WriteLine("Invalid option.");
+                Console.WriteLine("Invalid option.");
                 DisplayBankingMenuOptions();
             }
 
@@ -286,7 +304,7 @@ namespace banking
 
             while (displayMenu)
             {
-                System.Console.WriteLine("Hit [ENTER] to display banking menu.");
+                Console.WriteLine("Hit [ENTER] to display banking menu.");
                 if (Console.ReadKey(true).Key.ToString() == "Enter")
                 {
                     DisplayBankingMenuOptions();

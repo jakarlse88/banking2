@@ -21,3 +21,9 @@ SMITH, JOHN - #1234CD - Checking -- deposit funds Transaction amount: $0
 SMITH, JOHN - #1234I - View account holder information
 SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $7128318273123
 SMITH, JOHN - #1234CD - Checking -- deposit funds Transaction amount: $0
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234SB - Savings -- view balance
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $700
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $0
+SMITH, JOHN - #1234I - View account holder information

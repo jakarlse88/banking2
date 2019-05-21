@@ -13,6 +13,7 @@ namespace banking
         private int accountNumber;
         private string firstName, lastName;
         private BankingAccount checkingAccount, savingsAccount;
+        public static string[] validAccountTypes = new string[] { "checking", "savings" };
 
         /// <summary>
         /// Class constructor.
@@ -33,27 +34,48 @@ namespace banking
             this.savingsAccount = new BankingAccount(0, "savings");
         }
 
-        internal int AccountNumber
+        /// <summary>
+        /// Returns the BankingAccount corresponding to the type provided.
+        /// </summary>
+        /// <param name="accountType"></param>
+        /// <returns></returns>
+        public BankingAccount GetAccountByType(string accountType)
+        {
+            // Validate user input
+            if (Array.IndexOf(validAccountTypes, accountType.ToLower()) == -1)
+            {
+                return null;
+            }
+
+            BankingAccount returnAccount = 
+                accountType == "checking" ? 
+                this.checkingAccount : 
+                this.savingsAccount;
+
+            return returnAccount;
+        }
+
+        public int AccountNumber
         {
             get { return accountNumber; }
         }
 
-        internal string FirstName
+        public string FirstName
         {
             get { return firstName; }
         }
 
-        internal string LastName
+        public string LastName
         {
             get { return lastName; }
         }
 
-        internal BankingAccount CheckingAccount
+        public BankingAccount CheckingAccount
         {
             get { return checkingAccount; }
         }
 
-        internal BankingAccount SavingsAccount
+        public BankingAccount SavingsAccount
         {
             get { return savingsAccount; }
         }

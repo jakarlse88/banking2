@@ -21,7 +21,9 @@ namespace banking
         /// <param name="accountType">Type of the account</param>
         public BankingAccount(decimal initialBalance, string accountType)
         {
-            if (accountType != "checking" && accountType != "savings")
+            // Account type is invalid. 
+            // NOTE: This should currently never occur.
+            if (Array.IndexOf(AccountHolder.validAccountTypes, accountType) == -1)
             {
                 throw new Exception($"{accountType} is not a valid account type");
             }

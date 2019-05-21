@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace banking
+﻿namespace banking
 {
     class Program
     {
