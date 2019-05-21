@@ -27,3 +27,24 @@ SMITH, JOHN - #1234CB - Checking -- view balance
 SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $700
 SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $0
 SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $444
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $12
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234CB - Checking -- view balance
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $2000
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $10000
+SMITH, JOHN - #1234SD - Savings -- deposit funds Transaction amount: $987654
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234 CHECKING deposit Transaction amount: $1000
+SMITH, JOHN - #1234 CHECKING withdrawal Transaction amount: $500
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234I - View account holder information
+SMITH, JOHN - #1234 SAVINGS deposit Transaction amount: $10000
+SMITH, JOHN - #1234 SAVINGS withdrawal Transaction amount: $500
+SMITH, JOHN - #1234I - View account holder information

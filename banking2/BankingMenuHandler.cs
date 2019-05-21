@@ -130,7 +130,7 @@ namespace banking
         {
             string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
             logMessage += $"{accountType.ToUpper()} ";
-            logMessage += $"{operationType} - {bankingOptions[operationType]} ";
+            logMessage += $"{operationType} ";
             logMessage += $"Transaction amount: ${transactionAmount}";
 
             if (!File.Exists(logFile))
@@ -162,6 +162,11 @@ namespace banking
             WriteResultToFile(currentUser, "I");
         }
 
+        /// <summary>
+        /// Returns the balance of the current user's specified account.
+        /// </summary>
+        /// <param name="currentUser">The current user, whose information will be viewed.</param>
+        /// <param name="accountType">The type of account of which to get the balance.</param>
         private static void GetAccountBalance(AccountHolder currentUser, string accountType)
         {
             BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
@@ -173,10 +178,10 @@ namespace banking
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s checking account has a balance of {currentAccount.ViewBalance():c}");
+            Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account has a balance of {currentAccount.ViewBalance():c}");
             Console.WriteLine("");
 
-            WriteResultToFile(currentUser, "CB");
+            WriteResultToFile(currentUser, "I");
         }
 
         /// <summary>
@@ -195,7 +200,7 @@ namespace banking
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s savings account. Please specify an amount:");
+            Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
             decimal amountToDeposit = 0;
@@ -216,7 +221,7 @@ namespace banking
 
             currentAccount.DepositFunds(amountToDeposit);
 
-            WriteResultToFile(currentUser, "SD", amountToDeposit);
+            WriteResultToFile(currentUser, accountType, "deposit", amountToDeposit);
         }
 
         /// <summary>
@@ -235,7 +240,7 @@ namespace banking
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s savings account. Please specify an amount:");
+            Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
             decimal amountToWithdraw = 0;

@@ -14,6 +14,8 @@ namespace banking
         private decimal accountBalance;
         private readonly string accountType;
 
+        public string AccountType => accountType;
+
         /// <summary>
         /// Class constructor.
         /// </summary>

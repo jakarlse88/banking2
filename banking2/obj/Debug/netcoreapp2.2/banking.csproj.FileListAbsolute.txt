@@ -19,3 +19,4 @@ C:\Users\Jon Karlsen\source\repos\banking\banking2\obj\Debug\netcoreapp2.2\banki
 C:\Users\Jon Karlsen\source\repos\banking\banking2\obj\Debug\netcoreapp2.2\banking.AssemblyInfo.cs
 C:\Users\Jon Karlsen\source\repos\banking\banking2\obj\Debug\netcoreapp2.2\banking.dll
 C:\Users\Jon Karlsen\source\repos\banking\banking2\obj\Debug\netcoreapp2.2\banking.pdb
+C:\Users\Jon Karlsen\source\repos\banking\banking2\obj\Debug\netcoreapp2.2\banking.csprojAssemblyReference.cache
