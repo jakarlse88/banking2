@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "banking", "banking2\banking.csproj", "{0826C1DD-CDEB-4943-863E-51DB1E3E793C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingTests", "BankingTests\BankingTests.csproj", "{2A0217AA-717B-48D1-A220-6235C12AAAAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0826C1DD-CDEB-4943-863E-51DB1E3E793C} = {0826C1DD-CDEB-4943-863E-51DB1E3E793C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{0826C1DD-CDEB-4943-863E-51DB1E3E793C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0826C1DD-CDEB-4943-863E-51DB1E3E793C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0826C1DD-CDEB-4943-863E-51DB1E3E793C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0217AA-717B-48D1-A220-6235C12AAAAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0217AA-717B-48D1-A220-6235C12AAAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0217AA-717B-48D1-A220-6235C12AAAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0217AA-717B-48D1-A220-6235C12AAAAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

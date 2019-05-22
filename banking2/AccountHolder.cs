@@ -25,7 +25,7 @@ namespace banking
         /// objects instantiated from this
         /// </remarks>
         /// </summary>
-        internal AccountHolder(int accountNumber, string firstName, string lastName)
+        public AccountHolder(int accountNumber, string firstName, string lastName)
         {
             this.accountNumber = accountNumber;
             this.firstName = firstName.ToUpper();
@@ -48,7 +48,7 @@ namespace banking
             }
 
             BankingAccount returnAccount = 
-                accountType == "checking" ? 
+                accountType.ToLower() == "checking" ? 
                 this.checkingAccount : 
                 this.savingsAccount;
 

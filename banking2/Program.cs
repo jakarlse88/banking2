@@ -8,10 +8,7 @@
         /// Initialises the program's global state by populating the currentUser
         /// field with a dummy object.
         /// </summary>
-        private static void InitialiseProgram()
-        {
-            currentUser = new AccountHolder(1234, "John", "Smith");
-        }
+        private static void InitialiseProgram() => currentUser = new AccountHolder(1234, "John", "Smith");
 
         /// <summary>
         /// Executes the program.
