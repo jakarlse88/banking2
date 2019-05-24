@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using banking;
+using Banking;
 
 namespace BankingTests
 {

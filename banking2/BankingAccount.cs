@@ -1,9 +1,9 @@
-﻿using banking.interfaces;
+﻿using Banking.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace banking
+namespace Banking
 {
     /// <summary>
     /// The BankingAccount class contains balance and account type state,
@@ -23,15 +23,17 @@ namespace banking
         /// <param name="accountType">Type of the account</param>
         public BankingAccount(decimal initialBalance, string accountType)
         {
+            accountType = accountType.ToLower();
+
             // Account type is invalid. 
-            // NOTE: This should currently never occur.
+            // NOTE: These should currently never occur.
             if (Array.IndexOf(AccountHolder.validAccountTypes, accountType) == -1)
             {
                 throw new Exception($"{accountType} is not a valid account type");
             }
 
-            this.accountType = accountType;
             this.accountBalance = initialBalance;
+            this.accountType = accountType;
         }
 
         /// <summary>

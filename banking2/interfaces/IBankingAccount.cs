@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace banking.interfaces
+namespace Banking.interfaces
 {
     interface IBankingAccount
     {

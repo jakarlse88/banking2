@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace banking
+namespace Banking
 {
     /// <summary>
     /// The AccountHolder class contains information about an account holder,

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace banking
+namespace Banking
 {
     /// <summary>
     /// Utility class for banking menu operations.
     /// </summary>
-    static class BankingMenuHandler
+    public static class BankingMenuHandler
     {
         // Banking menu options
         static readonly Dictionary<string, string> bankingOptions = new Dictionary<string, string>()
@@ -66,6 +66,29 @@ namespace banking
         }
 
         /// <summary>
+        /// Tries to parse a string value to a decimal.
+        /// </summary>
+        /// <param name="input">The string value to be parsed.</param>
+        /// <returns></returns>
+        public static decimal GetDecimalInput(string input)
+        {
+            try
+            {
+                return Decimal.Parse(input);
+            }
+            catch (OverflowException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Writes user and operation type to log file.
         /// </summary>
         /// <param name="currentUser">The current user, on whom operations will be executed.</param>
@@ -74,34 +97,6 @@ namespace banking
         {
             string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber}";
             logMessage += $"{operationType} - {bankingOptions[operationType]}";
-
-            if (!File.Exists(logFile))
-            {
-                using (StreamWriter sw = File.CreateText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-            else
-            {
-                using (StreamWriter sw = File.AppendText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Writes user, operation type, and transaction amount to log file.
-        /// </summary>
-        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
-        /// <param name="operationType">The type of operation.</param>
-        /// <param name="transactionAmount">The transaction amount.</param>
-        private static void WriteResultToFile(AccountHolder currentUser, string operationType, decimal transactionAmount)
-        {
-            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber}";
-            logMessage += $"{operationType} - {bankingOptions[operationType]} ";
-            logMessage += $"Transaction amount: ${transactionAmount}";
 
             if (!File.Exists(logFile))
             {

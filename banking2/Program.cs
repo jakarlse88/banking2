@@ -1,4 +1,4 @@
-﻿namespace banking
+﻿namespace Banking
 {
     class Program
     {
