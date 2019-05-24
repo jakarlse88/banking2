@@ -27,7 +27,7 @@ namespace Banking
         /// </summary>
         static readonly Dictionary<string, Action<AccountHolder, string>> caseHandlerDictionary = new Dictionary<string, Action<AccountHolder, string>>()
         {
-            { "I", HandleCaseI },
+            { "I", PrintInformation },
             { "CB", GetAccountBalance },
             { "CD", DepositToAccount },
             { "CW", WithdrawFromAccount },
@@ -48,11 +48,6 @@ namespace Banking
         };
 
         /// <summary>
-        /// Specifies the filepath to which logs are written.
-        /// </summary>
-        static readonly string logFile = "log.txt";
-
-        /// <summary>
         /// Displays the banking menu options.
         /// </summary>
         private static void DisplayBankingMenuOptions()
@@ -66,95 +61,16 @@ namespace Banking
         }
 
         /// <summary>
-        /// Tries to parse a string value to a decimal.
-        /// </summary>
-        /// <param name="input">The string value to be parsed.</param>
-        /// <returns></returns>
-        public static decimal GetDecimalInput(string input)
-        {
-            try
-            {
-                return Decimal.Parse(input);
-            }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Writes user and operation type to log file.
-        /// </summary>
-        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
-        /// <param name="operationType">The type of operation.</param>
-        private static void WriteResultToFile(AccountHolder currentUser, string operationType)
-        {
-            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber}";
-            logMessage += $"{operationType} - {bankingOptions[operationType]}";
-
-            if (!File.Exists(logFile))
-            {
-                using (StreamWriter sw = File.CreateText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-            else
-            {
-                using (StreamWriter sw = File.AppendText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Writes user, account type, operation type, and transaction amount to log file. 
-        /// </summary>
-        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
-        /// <param name="accountType">The account type.</param>
-        /// <param name="operationType">The type of operation.</param>
-        /// <param name="transactionAmount">The transaction amount.</param>
-        private static void WriteResultToFile(AccountHolder currentUser, string accountType, string operationType, decimal transactionAmount)
-        {
-            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
-            logMessage += $"{accountType.ToUpper()} ";
-            logMessage += $"{operationType} ";
-            logMessage += $"Transaction amount: ${transactionAmount}";
-
-            if (!File.Exists(logFile))
-            {
-                using (StreamWriter sw = File.CreateText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-            else
-            {
-                using (StreamWriter sw = File.AppendText("log.txt"))
-                {
-                    sw.WriteLine(logMessage);
-                }
-            }
-        }
-
-        /// <summary>
         /// Handles case "I" -- view account holder information
         /// </summary>
         /// <param name="currentUser">The current user, whose information will be viewed.</param>
-        private static void HandleCaseI(AccountHolder currentUser, string accountType)
+        private static void PrintInformation(AccountHolder currentUser, string accountType)
         {
             Console.WriteLine();
             Console.WriteLine($"Viewing the account of {currentUser.LastName}, {currentUser.FirstName} with account #{currentUser.AccountNumber}");
             Console.WriteLine();
 
-            WriteResultToFile(currentUser, "I");
+            _Utilities.WriteResultToFile(currentUser, "I");
         }
 
         /// <summary>
@@ -176,7 +92,7 @@ namespace Banking
             Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account has a balance of {currentAccount.ViewBalance():c}");
             Console.WriteLine("");
 
-            WriteResultToFile(currentUser, "I");
+            _Utilities.WriteResultToFile(currentUser, "I");
         }
 
         /// <summary>
@@ -198,25 +114,11 @@ namespace Banking
             Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
-            decimal amountToDeposit = 0;
-
-            try
-            {
-                amountToDeposit = Decimal.Parse(Console.ReadLine());
-            }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Input must consist wholly of numbers.");
-            }
+            decimal amountToDeposit = _Utilities.GetDecimalInput(Console.ReadLine());
 
             currentAccount.DepositFunds(amountToDeposit);
 
-            WriteResultToFile(currentUser, accountType, "deposit", amountToDeposit);
+            _Utilities.WriteResultToFile(currentUser, "deposit", accountType, amountToDeposit);
         }
 
         /// <summary>
@@ -238,25 +140,11 @@ namespace Banking
             Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
-            decimal amountToWithdraw = 0;
-
-            try
-            {
-                amountToWithdraw = decimal.Parse(Console.ReadLine());
-            }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Input must consist wholly of numbers.");
-            }
+            decimal amountToWithdraw = _Utilities.GetDecimalInput(Console.ReadLine());
 
             currentAccount.WithdrawFunds(amountToWithdraw);
 
-            WriteResultToFile(currentUser, accountType, "withdrawal", amountToWithdraw);
+            _Utilities.WriteResultToFile(currentUser, "withdrawal", accountType, amountToWithdraw);
         }
 
         /// <summary>
