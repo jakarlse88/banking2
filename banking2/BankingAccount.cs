@@ -68,7 +68,11 @@ namespace Banking
         /// </summary>
         public void WithdrawFunds(decimal fundsToBeWithdrawn)
         {
-            if (fundsToBeWithdrawn < accountBalance)
+            if (fundsToBeWithdrawn < 0)
+            {
+                Console.WriteLine("Please specify an amount greater than 0");
+            }
+            else if (fundsToBeWithdrawn < accountBalance)
             {
                 accountBalance -= fundsToBeWithdrawn;
                 Console.WriteLine($"{fundsToBeWithdrawn:c} were successfully withdrawn from the account.");

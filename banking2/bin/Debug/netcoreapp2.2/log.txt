@@ -59,3 +59,6 @@ SMITH, JOHN - #1234 CHECKING withdrawal Transaction amount: $12
 SMITH, JOHN - #1234I
 SMITH, JOHN - #1234I
 SMITH, JOHN - #1234 SAVINGS withdrawal Transaction amount: $123
+SMITH, JOHN - #1234 CHECKING deposit Transaction amount: $123123
+SMITH, JOHN - #1234 CHECKING deposit Transaction amount: $0
+karlsen, jon - #1654I

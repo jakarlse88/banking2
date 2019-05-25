@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Banking
 {
@@ -10,10 +11,16 @@ namespace Banking
     /// </summary>
     public class AccountHolder
     {
-        private int accountNumber;
-        private string firstName, lastName;
-        private BankingAccount checkingAccount, savingsAccount;
+        private int _accountNumber;
+        private string _firstName, _lastName;
+        private BankingAccount _checkingAccount, _savingsAccount;
         public static string[] validAccountTypes = new string[] { "checking", "savings" };
+        private enum accountNumberConfig
+        {
+            lowerBound = 1000,
+            upperBound = 10000,
+            defaultValue = 666
+        }
 
         /// <summary>
         /// Class constructor.
@@ -25,13 +32,31 @@ namespace Banking
         /// objects instantiated from this
         /// </remarks>
         /// </summary>
-        public AccountHolder(int accountNumber, string firstName, string lastName)
+        public AccountHolder(string firstName, string lastName)
         {
-            this.accountNumber = accountNumber;
-            this.firstName = firstName.ToUpper();
-            this.lastName = lastName.ToUpper();
-            this.checkingAccount = new BankingAccount(0, "checking");
-            this.savingsAccount = new BankingAccount(0, "savings");
+            this._accountNumber = ConstructAccountNumber() ?? (int)accountNumberConfig.defaultValue;
+            this._firstName = firstName;
+            this._lastName = lastName;
+            this._checkingAccount = new BankingAccount(0, "checking");
+            this._savingsAccount = new BankingAccount(0, "savings");
+        }
+
+        /// <summary>
+        /// Constructs an account number.
+        /// </summary>
+        /// <returns></returns>
+        private int? ConstructAccountNumber()
+        {
+            try
+            {
+                return _Utilities.GetRandomIntFromRange
+                    ((int)accountNumberConfig.lowerBound, (int)accountNumberConfig.upperBound);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>
@@ -49,35 +74,35 @@ namespace Banking
 
             BankingAccount returnAccount = 
                 accountType.ToLower() == "checking" ? 
-                this.checkingAccount : 
-                this.savingsAccount;
+                this._checkingAccount : 
+                this._savingsAccount;
 
             return returnAccount;
         }
 
         public int AccountNumber
         {
-            get { return accountNumber; }
+            get { return _accountNumber; }
         }
 
         public string FirstName
         {
-            get { return firstName; }
+            get { return _firstName; }
         }
 
         public string LastName
         {
-            get { return lastName; }
+            get { return _lastName; }
         }
 
         public BankingAccount CheckingAccount
         {
-            get { return checkingAccount; }
+            get { return _checkingAccount; }
         }
 
         public BankingAccount SavingsAccount
         {
-            get { return savingsAccount; }
+            get { return _savingsAccount; }
         }
     }
 }

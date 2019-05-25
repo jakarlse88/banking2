@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace Banking
 {
@@ -25,14 +24,49 @@ namespace Banking
             }
             catch (OverflowException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"ERROR: {ex.Message}");
+                return -1;
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"ERROR: {ex.Message}");
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// Validates string input as being alphanumeric. 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ValidateAlphanumericInput(string input)
+        {
+            if (!input.All(Char.IsLetter))
+            {
+                throw new ArgumentException("Name can only contain letters");
             }
 
-            return 0;
+            return input.ToLower();
+        }
+
+        /// <summary>
+        /// Returns a random int that is within a specified range.
+        /// </summary>
+        /// <param name="lowerBound">Minimum value, inclusive.</param>
+        /// <param name="upperBound">Maximum value, exclusive.</param>
+        /// <returns></returns>
+        public static int GetRandomIntFromRange(int lowerBound, int upperBound)
+        {
+            Random r = new Random();
+
+            try { 
+                return r.Next(lowerBound, upperBound);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         /// <summary>
