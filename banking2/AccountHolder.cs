@@ -7,20 +7,13 @@ namespace Banking
 {
     /// <summary>
     /// The AccountHolder class contains information about an account holder,
-    /// including name, account number, and references to his/her savings and checking accounts. 
+    /// including name, account number, and references to his/her savings and checking accounts.
     /// </summary>
     public class AccountHolder
     {
         private int _accountNumber;
         private string _firstName, _lastName;
         private BankingAccount _checkingAccount, _savingsAccount;
-        public static string[] validAccountTypes = new string[] { "checking", "savings" };
-        private enum accountNumberConfig
-        {
-            lowerBound = 1000,
-            upperBound = 10000,
-            defaultValue = 666
-        }
 
         /// <summary>
         /// Class constructor.
@@ -28,17 +21,18 @@ namespace Banking
         /// <param name="firstName">Used to assign a first name.</param>
         /// <param name="lastName">Used to assign a last name.</param>
         /// <remarks>
-        /// In the current implementation, the savings/checking accounts are accessed via 
+        /// In the current implementation, the savings/checking accounts are accessed via
         /// objects instantiated from this
         /// </remarks>
         /// </summary>
         public AccountHolder(string firstName, string lastName)
         {
-            this._accountNumber = ConstructAccountNumber() ?? (int)accountNumberConfig.defaultValue;
+            this._accountNumber = ConstructAccountNumber() ??
+                (int)BankingAccount.ValidAccountNumberConfig.defaultValue;
             this._firstName = firstName;
             this._lastName = lastName;
-            this._checkingAccount = new BankingAccount(0, "checking");
-            this._savingsAccount = new BankingAccount(0, "savings");
+            this._checkingAccount = new BankingAccount(0, (int)BankingAccount.ValidAccountTypes.checking);
+            this._savingsAccount = new BankingAccount(0, (int)BankingAccount.ValidAccountTypes.savings);
         }
 
         /// <summary>
@@ -49,8 +43,9 @@ namespace Banking
         {
             try
             {
-                return _Utilities.GetRandomIntFromRange
-                    ((int)accountNumberConfig.lowerBound, (int)accountNumberConfig.upperBound);
+                return _Utilities.GetRandomIntFromRange(
+                    (int)BankingAccount.ValidAccountNumberConfig.lowerBound,
+                    (int)BankingAccount.ValidAccountNumberConfig.upperBound);
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -64,17 +59,17 @@ namespace Banking
         /// </summary>
         /// <param name="accountType"></param>
         /// <returns></returns>
-        public BankingAccount GetAccountByType(string accountType)
+        public BankingAccount GetAccountByType(int accountType)
         {
             // Validate user input
-            if (Array.IndexOf(validAccountTypes, accountType.ToLower()) == -1)
+            if (!Enum.IsDefined(typeof(BankingAccount.ValidAccountTypes), accountType))
             {
                 return null;
             }
 
-            BankingAccount returnAccount = 
-                accountType.ToLower() == "checking" ? 
-                this._checkingAccount : 
+            BankingAccount returnAccount =
+                accountType == (int)BankingAccount.ValidAccountTypes.checking ?
+                this._checkingAccount :
                 this._savingsAccount;
 
             return returnAccount;

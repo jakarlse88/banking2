@@ -7,8 +7,8 @@ namespace Banking
         private static AccountHolder currentUser;
 
         /// <summary>
-        /// Initialises the program's global state by populating the currentUser
-        /// field with a dummy object.
+        /// Initialises the program's by constructing a new current user 
+        /// from user's supplied name.
         /// </summary>
         private static void InitialiseProgram()
         {
@@ -20,10 +20,10 @@ namespace Banking
                 try
                 {
                     Console.Write("Enter your first name: ");
-                    firstName = _Utilities.ValidateAlphanumericInput(Console.ReadLine());
+                    firstName = _Utilities.ValidateNameInput(Console.ReadLine());
 
                     Console.Write("Enter your last name: ");
-                    lastName = _Utilities.ValidateAlphanumericInput(Console.ReadLine());
+                    lastName = _Utilities.ValidateNameInput(Console.ReadLine());
 
                     currentUser = new AccountHolder(firstName, lastName);
                 }
@@ -49,9 +49,8 @@ namespace Banking
             else InitialiseProgram();
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
-            InitialiseProgram();
             ExecuteProgram();
         }
     }

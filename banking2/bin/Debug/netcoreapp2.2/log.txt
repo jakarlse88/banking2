@@ -62,3 +62,14 @@ SMITH, JOHN - #1234 SAVINGS withdrawal Transaction amount: $123
 SMITH, JOHN - #1234 CHECKING deposit Transaction amount: $123123
 SMITH, JOHN - #1234 CHECKING deposit Transaction amount: $0
 karlsen, jon - #1654I
+karlsen, jon - #9104I
+karlsen, jon - #5739I
+karlsen, jon - #5244I
+jon, jon - #4480I
+karlsen, jon - #4184I
+jon, jon - #4403I
+jon, jon - #5795I
+karlsen, jon - #6689I
+j, j - #3344 SAVINGS deposit Transaction amount: $1231923
+j, j - #3344I
+j, j - #3344I

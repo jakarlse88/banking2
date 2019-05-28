@@ -39,8 +39,13 @@ namespace Banking
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string ValidateAlphanumericInput(string input)
+        public static string ValidateNameInput(string input)
         {
+            if (input.Length <= 0)
+            {
+                throw new ArgumentException("Name cannot be blank");
+            }
+
             if (!input.All(Char.IsLetter))
             {
                 throw new ArgumentException("Name can only contain letters");
@@ -102,10 +107,12 @@ namespace Banking
         /// <param name="accountType">The account type.</param>
         /// <param name="operationType">The type of operation.</param>
         /// <param name="transactionAmount">The transaction amount.</param>
-        public static void WriteResultToFile(AccountHolder currentUser, string operationType, string accountType, decimal transactionAmount)
+        public static void WriteResultToFile(AccountHolder currentUser, string operationType, int accountType, decimal transactionAmount)
         {
+
+
             string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
-            logMessage += $"{accountType.ToUpper()} ";
+            logMessage += $"{Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType).ToUpper()} ";
             logMessage += $"{operationType} ";
             logMessage += $"Transaction amount: ${transactionAmount}";
 

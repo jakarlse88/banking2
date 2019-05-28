@@ -11,29 +11,36 @@ namespace Banking
     /// </summary>
     public class BankingAccount : IBankingAccount
     {
-        private decimal accountBalance;
-        private readonly string accountType;
+        public enum ValidAccountTypes { checking, savings };
 
-        public string AccountType => accountType;
+        public enum ValidAccountNumberConfig
+        {
+            lowerBound = 1000,
+            upperBound = 10000,
+            defaultValue = 666
+        }
+
+        private decimal accountBalance;
+        private readonly int _accountType;
+
+        public int AccountType => _accountType;
 
         /// <summary>
         /// Class constructor.
         /// </summary>
         /// <param name="initialBalance">Initial balance for the account.</param>
         /// <param name="accountType">Type of the account</param>
-        public BankingAccount(decimal initialBalance, string accountType)
+        public BankingAccount(decimal initialBalance, int accountType)
         {
-            accountType = accountType.ToLower();
-
-            // Account type is invalid. 
+            // Account type is invalid.
             // NOTE: These should currently never occur.
-            if (Array.IndexOf(AccountHolder.validAccountTypes, accountType) == -1)
+            if (!Enum.IsDefined(typeof(ValidAccountTypes), accountType))
             {
                 throw new Exception($"{accountType} is not a valid account type");
             }
 
             this.accountBalance = initialBalance;
-            this.accountType = accountType;
+            this._accountType = accountType;
         }
 
         /// <summary>

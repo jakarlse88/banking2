@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Banking
 {
@@ -9,43 +8,131 @@ namespace Banking
     /// </summary>
     public static class BankingMenuHandler
     {
-        // Banking menu options
-        static readonly Dictionary<string, string> bankingOptions = new Dictionary<string, string>()
+        private enum BankingMenuOptions { information, bankingOperations, exit, invalid = -1 };
+
+        private enum ValidBankingOperations { viewBalance, depositFunds, withdrawFunds };
+
+        private static readonly Dictionary<int, string> bankingOptions = new Dictionary<int, string>()
+        {
+            { (int)BankingMenuOptions.information, "Account holder information" },
+            { (int)BankingMenuOptions.bankingOperations, "Banking operations" },
+            { (int)BankingMenuOptions.exit, "Exit" }
+        };
+
+        private static readonly Dictionary<int, string> operationTypeOptions = new Dictionary<int, string>()
+        {
+            { (int)ValidBankingOperations.viewBalance, "View balance" },
+            { (int)ValidBankingOperations.depositFunds, "Deposit funds" },
+            { (int)ValidBankingOperations.withdrawFunds, "Withdraw funds" }
+        };
+
+        private static readonly Dictionary<int, string> accountTypeOptions = new Dictionary<int, string>()
+        {
+            { (int)BankingAccount.ValidAccountTypes.checking, "Checking" },
+            { (int)BankingAccount.ValidAccountTypes.savings, "Savings" }
+        };
+
+        private static void ManageBankingOptions(AccountHolder currentUser)
+        {
+            int? currentAccountType = null;
+            int? currentOperationType = null;
+
+            while (currentAccountType == null)
             {
-                { "I", "View account holder information" },
-                { "CB", "Checking -- view balance" },
-                { "CD", "Checking -- deposit funds" },
-                { "CW", "Checking -- withdraw funds" },
-                { "SB", "Savings -- view balance" },
-                { "SD", "Savings -- deposit funds" },
-                { "SW", "Savings -- withdraw funds" },
-                { "X", "Exit banking menu" }
-            };
+                currentAccountType = SelectAccountType();
+            }
 
-        /// <summary>
-        /// Maps banking options to relevant case handlers
-        /// </summary>
-        static readonly Dictionary<string, Action<AccountHolder, string>> caseHandlerDictionary = new Dictionary<string, Action<AccountHolder, string>>()
-        {
-            { "I", PrintInformation },
-            { "CB", GetAccountBalance },
-            { "CD", DepositToAccount },
-            { "CW", WithdrawFromAccount },
-            { "SB", GetAccountBalance },
-            { "SD", DepositToAccount },
-            { "SW", WithdrawFromAccount },
-        };
+            string currentAccountName = Enum.GetName(typeof(BankingAccount.ValidAccountTypes), currentAccountType);
+            Console.WriteLine($"{currentAccountName} is selected.");
 
-        static readonly Dictionary<string, string> optionsToAccountTypeDictionary = new Dictionary<string, string>
+            while (currentOperationType == null)
+            {
+                currentOperationType = SelectOperationType();
+            }
+
+            string currentOperationTypeName = Enum.GetName(typeof(ValidBankingOperations), currentOperationType);
+            Console.WriteLine($"{currentOperationTypeName} is selected.");
+
+            switch (currentOperationType)
+            {
+                case ((int)ValidBankingOperations.viewBalance):
+                    PrintAccountBalance(currentUser, (int)currentAccountType);
+                    break;
+
+                case ((int)ValidBankingOperations.depositFunds):
+                    DepositToAccount(currentUser, (int)currentAccountType);
+                    break;
+
+                case ((int)ValidBankingOperations.withdrawFunds):
+                    WithdrawFromAccount(currentUser, (int)currentAccountType);
+                    break;
+            }
+        }
+
+        private static int? SelectAccountType()
         {
-            {"I", "information" },
-            {"CB", "checking" },
-            {"CD", "checking" },
-            {"CW", "checking" },
-            {"SB", "savings" },
-            {"SD", "savings" },
-            {"SW", "savings" },
-        };
+            Console.WriteLine();
+            Console.WriteLine("Please select from the below options:");
+
+            foreach (KeyValuePair<int, string> entry in accountTypeOptions)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }
+
+            return HandleAccountTypeSelection();
+        }
+
+        private static int? SelectOperationType()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Please select from the below options:");
+
+            foreach (KeyValuePair<int, string> entry in operationTypeOptions)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }
+
+            return HandleOperationTypeSelection();
+        }
+
+        private static int? HandleAccountTypeSelection()
+        {
+            int userInput = GetIntInput();
+
+            if (Enum.IsDefined(typeof(BankingAccount.ValidAccountTypes), userInput))
+            {
+                return (userInput == (int)BankingAccount.ValidAccountTypes.checking) ?
+                    (int)BankingAccount.ValidAccountTypes.checking :
+                    (int)BankingAccount.ValidAccountTypes.savings;
+            }
+            else
+            {
+                Console.WriteLine("Invalid account type specified. Please try again.");
+                return null;
+            }
+        }
+
+        private static int? HandleOperationTypeSelection()
+        {
+            int userInput = GetIntInput();
+
+            if (Enum.IsDefined(typeof(ValidBankingOperations), userInput))
+            {
+                switch (userInput)
+                {
+                    case ((int)ValidBankingOperations.viewBalance):
+                        return (int)ValidBankingOperations.viewBalance;
+
+                    case ((int)ValidBankingOperations.depositFunds):
+                        return (int)ValidBankingOperations.depositFunds;
+
+                    case ((int)ValidBankingOperations.withdrawFunds):
+                        return (int)ValidBankingOperations.withdrawFunds;
+                }
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Displays the banking menu options.
@@ -54,7 +141,7 @@ namespace Banking
         {
             Console.WriteLine("Please select from the below options:");
 
-            foreach (KeyValuePair<string, string> entry in bankingOptions)
+            foreach (KeyValuePair<int, string> entry in bankingOptions)
             {
                 Console.WriteLine($"{entry.Key}: {entry.Value}");
             }
@@ -64,7 +151,7 @@ namespace Banking
         /// Handles case "I" -- view account holder information
         /// </summary>
         /// <param name="currentUser">The current user, whose information will be viewed.</param>
-        private static void PrintInformation(AccountHolder currentUser, string accountType)
+        private static void PrintInformation(AccountHolder currentUser)
         {
             Console.WriteLine();
             Console.WriteLine($"Viewing the account of {currentUser.LastName}, {currentUser.FirstName} with account #{currentUser.AccountNumber}");
@@ -78,7 +165,7 @@ namespace Banking
         /// </summary>
         /// <param name="currentUser">The current user, whose information will be viewed.</param>
         /// <param name="accountType">The type of account of which to get the balance.</param>
-        private static void GetAccountBalance(AccountHolder currentUser, string accountType)
+        private static void PrintAccountBalance(AccountHolder currentUser, int accountType)
         {
             BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
 
@@ -100,7 +187,7 @@ namespace Banking
         /// </summary>
         /// <param name="currentUser">The current user, into whose account money will be deposited.</param>
         /// <param name="accountType">The type of account into which to deposit.</param>
-        private static void DepositToAccount(AccountHolder currentUser, string accountType)
+        private static void DepositToAccount(AccountHolder currentUser, int accountType)
         {
             BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
 
@@ -126,7 +213,7 @@ namespace Banking
         /// </summary>
         /// <param name="currentUser">The current user, from whose account money will be withdrawn.</param>
         /// <param name="accountType">The type of account from which to withdraw.</param>
-        private static void WithdrawFromAccount(AccountHolder currentUser, string accountType)
+        private static void WithdrawFromAccount(AccountHolder currentUser, int accountType)
         {
             BankingAccount currentAccount = currentUser.GetAccountByType(accountType);
 
@@ -164,22 +251,57 @@ namespace Banking
         /// <param name="displayMenu">References a bool that decides whether to show the menu.</param>
         private static void HandleUserMenuChoice(AccountHolder currentUser, ref bool displayMenu)
         {
-            string userInput = Console.ReadLine().ToUpper();
+            int userInput = GetIntInput();
 
-            if (bankingOptions.ContainsKey(userInput) && userInput != "X")
+            if (userInput != (int)BankingMenuOptions.invalid)
             {
-                caseHandlerDictionary[userInput](currentUser, optionsToAccountTypeDictionary[userInput]);
-            }
-            else if (userInput == "X")
-            {
-                ExitBankingMenu(ref displayMenu);
+                switch (userInput)
+                {
+                    case ((int)BankingMenuOptions.information):
+                        PrintInformation(currentUser);
+                        break;
+
+                    case ((int)BankingMenuOptions.bankingOperations):
+                        ManageBankingOptions(currentUser);
+                        break;
+
+                    case ((int)BankingMenuOptions.exit):
+                        ExitBankingMenu(ref displayMenu);
+                        break;
+                }
             }
             else
             {
                 Console.WriteLine("Invalid option.");
                 DisplayBankingMenuOptions();
             }
+        }
 
+        private static int GetIntInput()
+        {
+            int userInput;
+
+            try
+            {
+                userInput = int.Parse(Console.ReadLine());
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+            catch (OverflowException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+
+            return userInput;
         }
 
         /// <summary>
@@ -190,7 +312,7 @@ namespace Banking
         {
             bool displayMenu = true;
 
-            while (displayMenu)
+            do
             {
                 Console.WriteLine("Hit [ENTER] to display banking menu.");
                 if (Console.ReadKey(true).Key.ToString() == "Enter")
@@ -198,8 +320,7 @@ namespace Banking
                     DisplayBankingMenuOptions();
                     HandleUserMenuChoice(currentUser, ref displayMenu);
                 }
-            }
-
+            } while (displayMenu);
         }
     }
 }
