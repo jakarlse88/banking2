@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Banking
 {
@@ -38,7 +39,8 @@ namespace Banking
         /// Validates string input as being alphanumeric.
         /// </summary>
         /// <param name="input"></param>
-        /// <returns></returns>
+        /// <returns>A validated string.</returns>
+        /// <exception cref="ArgumentException"></exception>"
         public static string ValidateNameInput(string input)
         {
             if (input.Length <= 0)
@@ -46,7 +48,7 @@ namespace Banking
                 throw new ArgumentException("Name cannot be blank");
             }
 
-            if (!input.All(Char.IsLetter))
+            if (!input.All(char.IsLetter))
             {
                 throw new ArgumentException("Name can only contain letters");
             }
@@ -59,7 +61,8 @@ namespace Banking
         /// </summary>
         /// <param name="lowerBound">Minimum value, inclusive.</param>
         /// <param name="upperBound">Maximum value, exclusive.</param>
-        /// <returns></returns>
+        /// <returns>A random int in the specified range.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>"
         public static int GetRandomIntFromRange(int lowerBound, int upperBound)
         {
             Random r = new Random();
@@ -82,8 +85,13 @@ namespace Banking
         /// <param name="operationType">The type of operation.</param>
         public static void WriteResultToFile(AccountHolder currentUser, string operationType)
         {
-            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber}";
-            logMessage += $"{operationType}";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"USER {currentUser.LastName}, {currentUser.FirstName}\t");
+            sb.Append($"Account #{currentUser.AccountNumber}\t");
+            sb.Append($"{operationType.ToUpper()}");
+
+            string logMessage = sb.ToString();
 
             if (!File.Exists(logFile))
             {
@@ -110,10 +118,15 @@ namespace Banking
         /// <param name="transactionAmount">The transaction amount.</param>
         public static void WriteResultToFile(AccountHolder currentUser, string operationType, int accountType, decimal transactionAmount)
         {
-            string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
-            logMessage += $"{Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType).ToUpper()} ";
-            logMessage += $"{operationType} ";
-            logMessage += $"Transaction amount: ${transactionAmount}";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"USER {currentUser.LastName}, {currentUser.FirstName}\t");
+            sb.Append($"Account #{currentUser.AccountNumber}\t");
+            sb.Append($"{Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType).ToUpper()}\t");
+            sb.Append($"{operationType.ToUpper()}\t");
+            sb.Append($"Transaction amount: {transactionAmount:C}");
+
+            string logMessage = sb.ToString();
 
             if (!File.Exists(logFile))
             {
