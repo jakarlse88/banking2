@@ -267,18 +267,24 @@ namespace Banking
             Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
-            decimal amountToDeposit = _Utilities.GetDecimalInput(Console.ReadLine());
-
             try
             {
+                decimal amountToDeposit = _Utilities.GetDecimalInput(Console.ReadLine());
                 currentAccount.DepositFunds(amountToDeposit);
+                _Utilities.WriteResultToFile(currentUser, "deposit", accountType, amountToDeposit);
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
             }
-
-            _Utilities.WriteResultToFile(currentUser, "deposit", accountType, amountToDeposit);
+            catch (OverflowException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -300,18 +306,24 @@ namespace Banking
             Console.WriteLine($"Withdrawing from {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
             Console.Write("$");
 
-            decimal amountToWithdraw = _Utilities.GetDecimalInput(Console.ReadLine());
-
             try
             {
+                decimal amountToWithdraw = _Utilities.GetDecimalInput(Console.ReadLine());
                 currentAccount.WithdrawFunds(amountToWithdraw);
+                _Utilities.WriteResultToFile(currentUser, "withdrawal", accountType, amountToWithdraw);
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
             }
-
-            _Utilities.WriteResultToFile(currentUser, "withdrawal", accountType, amountToWithdraw);
+            catch (OverflowException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
         }
 
         /// <summary>

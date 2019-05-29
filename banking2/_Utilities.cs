@@ -16,6 +16,8 @@ namespace Banking
         /// </summary>
         /// <param name="input">The string value to be parsed.</param>
         /// <returns></returns>
+        /// <exception cref="OverflowException"></exception>"
+        /// <exception cref="FormatException"></exception>"
         public static decimal GetDecimalInput(string input)
         {
             try
@@ -24,13 +26,11 @@ namespace Banking
             }
             catch (OverflowException ex)
             {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                return -1;
+                throw ex;
             }
             catch (FormatException ex)
             {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                return -1;
+                throw ex;
             }
         }
 
