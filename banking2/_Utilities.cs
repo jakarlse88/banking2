@@ -9,7 +9,7 @@ namespace Banking
         /// <summary>
         /// Specifies the filepath to which logs are written.
         /// </summary>
-        static readonly string logFile = "log.txt";
+        private static readonly string logFile = "log.txt";
 
         /// <summary>
         /// Tries to parse a string value to a decimal.
@@ -20,7 +20,7 @@ namespace Banking
         {
             try
             {
-                return Decimal.Parse(input);
+                return decimal.Parse(input);
             }
             catch (OverflowException ex)
             {
@@ -35,7 +35,7 @@ namespace Banking
         }
 
         /// <summary>
-        /// Validates string input as being alphanumeric. 
+        /// Validates string input as being alphanumeric.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -64,7 +64,8 @@ namespace Banking
         {
             Random r = new Random();
 
-            try { 
+            try
+            {
                 return r.Next(lowerBound, upperBound);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -101,7 +102,7 @@ namespace Banking
         }
 
         /// <summary>
-        /// Writes user, account type, operation type, and transaction amount to log file. 
+        /// Writes user, account type, operation type, and transaction amount to log file.
         /// </summary>
         /// <param name="currentUser">The current user, on whom operations will be executed.</param>
         /// <param name="accountType">The account type.</param>
@@ -109,8 +110,6 @@ namespace Banking
         /// <param name="transactionAmount">The transaction amount.</param>
         public static void WriteResultToFile(AccountHolder currentUser, string operationType, int accountType, decimal transactionAmount)
         {
-
-
             string logMessage = $"{currentUser.LastName}, {currentUser.FirstName} - #{currentUser.AccountNumber} ";
             logMessage += $"{Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType).ToUpper()} ";
             logMessage += $"{operationType} ";
@@ -131,6 +130,5 @@ namespace Banking
                 }
             }
         }
-
     }
 }

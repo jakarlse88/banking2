@@ -9,90 +9,54 @@ namespace BankingTests
         [Fact]
         public void TestGetAccountTypeReturnsCheckingAccountWhenPassedChecking()
         {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
+            // Arrange
+            AccountHolder currentUser = new AccountHolder("John", "Smith");
 
-            BankingAccount currentAccount = currentUser.GetAccountByType("checking");
+            string expectedAccountType =
+                Enum.GetName(typeof(BankingAccount.ValidAccountTypes), (int)BankingAccount.ValidAccountTypes.checking);
 
-            Assert.Equal("checking", currentAccount.AccountType);
-        }
+            // Act
+            BankingAccount currentAccount =
+                currentUser.GetAccountByType((int)BankingAccount.ValidAccountTypes.checking);
 
-        [Fact]
-        public void TestGetAccountTypeReturnsCheckingAccountWhenPassedCheckingCaps()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
+            int actualAccountType = currentAccount.AccountType;
+            string actualAccountTypeString = Enum.GetName(typeof(BankingAccount.ValidAccountTypes), actualAccountType);
 
-            BankingAccount currentAccount = currentUser.GetAccountByType("CHECKING");
-
-            Assert.Equal("checking", currentAccount.AccountType);
-        }
-
-        [Fact]
-        public void TestGetAccountTypeReturnsCheckingAccountWhenPassedCheckingMixedCase()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
-
-            BankingAccount currentAccount = currentUser.GetAccountByType("cHecKiNg");
-
-            Assert.Equal("checking", currentAccount.AccountType);
+            // Asert
+            Assert.Equal(expectedAccountType, actualAccountTypeString);
         }
 
         [Fact]
         public void TestGetAccountTypeReturnsSavingsAccountWhenPassedSavings()
         {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
+            // Arrange
+            AccountHolder currentUser = new AccountHolder("John", "Smith");
 
-            BankingAccount currentAccount = currentUser.GetAccountByType("savings");
+            string expectedAccountType =
+                Enum.GetName(typeof(BankingAccount.ValidAccountTypes), (int)BankingAccount.ValidAccountTypes.savings);
 
-            Assert.Equal("savings", currentAccount.AccountType);
-        }
+            // Act
+            BankingAccount currentAccount =
+                currentUser.GetAccountByType((int)BankingAccount.ValidAccountTypes.savings);
 
-        [Fact]
-        public void TestGetAccountTypeReturnsSavingsAccountWhenPassedSavingsCaps()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
+            int actualAccountType = currentAccount.AccountType;
+            string actualAccountTypeString = Enum.GetName(typeof(BankingAccount.ValidAccountTypes), actualAccountType);
 
-            BankingAccount currentAccount = currentUser.GetAccountByType("SAVINGS");
-
-            Assert.Equal("savings", currentAccount.AccountType);
-        }
-
-        [Fact]
-        public void TestGetAccountTypeReturnsSavingsAccountWhenPassedSavingsMixedCase()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
-
-            BankingAccount currentAccount = currentUser.GetAccountByType("SaViNgS");
-
-            Assert.Equal("savings", currentAccount.AccountType);
+            // Asert
+            Assert.Equal(expectedAccountType, actualAccountTypeString);
         }
 
         [Fact]
         public void TestGetAccountTypeReturnsNullWhenPassedInvalidInput()
         {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
+            // Arrange
+            AccountHolder currentUser = new AccountHolder("John", "Smith");
+            int invalidAccountType = 666;
 
-            BankingAccount currentAccount = currentUser.GetAccountByType("lkasd");
+            // Act
+            BankingAccount currentAccount = currentUser.GetAccountByType(invalidAccountType);
 
-            Assert.Null(currentAccount);
-        }
-
-        [Fact]
-        public void TestGetAccountTypeReturnsNullWhenPassedInvalidInputNumeric()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
-
-            BankingAccount currentAccount = currentUser.GetAccountByType("123123");
-
-            Assert.Null(currentAccount);
-        }
-
-        [Fact]
-        public void TestGetAccountTypeReturnsNullWhenPassedInvalidInputMixed()
-        {
-            AccountHolder currentUser = new AccountHolder(1234, "John", "Smith");
-
-            BankingAccount currentAccount = currentUser.GetAccountByType("asd761267");
-
+            // Assert
             Assert.Null(currentAccount);
         }
     }

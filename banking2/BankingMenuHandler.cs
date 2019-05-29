@@ -8,10 +8,19 @@ namespace Banking
     /// </summary>
     public static class BankingMenuHandler
     {
+        /// <summary>
+        /// Enumerates the available banking menu options.
+        /// </summary>
         private enum BankingMenuOptions { information, bankingOperations, exit, invalid = -1 };
 
+        /// <summary>
+        /// Enumerates the valid banking operations.
+        /// </summary>
         private enum ValidBankingOperations { viewBalance, depositFunds, withdrawFunds };
 
+        /// <summary>
+        /// Maps the valid banking menu options to descriptive strings.
+        /// </summary>
         private static readonly Dictionary<int, string> bankingOptions = new Dictionary<int, string>()
         {
             { (int)BankingMenuOptions.information, "Account holder information" },
@@ -19,6 +28,9 @@ namespace Banking
             { (int)BankingMenuOptions.exit, "Exit" }
         };
 
+        /// <summary>
+        /// Maps the valid banking operations to descriptive strings.
+        /// </summary>
         private static readonly Dictionary<int, string> operationTypeOptions = new Dictionary<int, string>()
         {
             { (int)ValidBankingOperations.viewBalance, "View balance" },
@@ -26,12 +38,50 @@ namespace Banking
             { (int)ValidBankingOperations.withdrawFunds, "Withdraw funds" }
         };
 
+        /// <summary>
+        /// Maps the valid account types to descriptive strings.
+        /// </summary>
         private static readonly Dictionary<int, string> accountTypeOptions = new Dictionary<int, string>()
         {
             { (int)BankingAccount.ValidAccountTypes.checking, "Checking" },
             { (int)BankingAccount.ValidAccountTypes.savings, "Savings" }
         };
 
+        /// <summary>
+        /// Gets and validates integer input from user.
+        /// </summary>
+        /// <returns>A validated int.</returns>
+        private static int GetIntInput()
+        {
+            int userInput;
+
+            try
+            {
+                userInput = int.Parse(Console.ReadLine());
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+            catch (OverflowException ex)
+            {
+                Console.WriteLine(ex.Message);
+                userInput = (int)BankingMenuOptions.invalid;
+            }
+
+            return userInput;
+        }
+
+        /// <summary>
+        /// Manages the banking options sub-menu.
+        /// </summary>
+        /// <param name="currentUser">The current user, on whom operations will be executed.</param>
         private static void ManageBankingOptions(AccountHolder currentUser)
         {
             int? currentAccountType = null;
@@ -69,6 +119,10 @@ namespace Banking
             }
         }
 
+        /// <summary>
+        /// Selects a valid account type.
+        /// </summary>
+        /// <returns>A nullable integer that corresponds to the chosen menu option.</returns>
         private static int? SelectAccountType()
         {
             Console.WriteLine();
@@ -82,6 +136,10 @@ namespace Banking
             return HandleAccountTypeSelection();
         }
 
+        /// <summary>
+        /// Selects a valid operation type.
+        /// </summary>
+        /// <returns>A nullable integer that corresponds to the chosen menu option.</returns>
         private static int? SelectOperationType()
         {
             Console.WriteLine();
@@ -95,6 +153,10 @@ namespace Banking
             return HandleOperationTypeSelection();
         }
 
+        /// <summary>
+        /// Handles the account type selection.
+        /// </summary>
+        /// <returns>A nullable integer that corresponds to the chosen menu option.</returns>
         private static int? HandleAccountTypeSelection()
         {
             int userInput = GetIntInput();
@@ -112,6 +174,10 @@ namespace Banking
             }
         }
 
+        /// <summary>
+        /// Handles the operation type selection.
+        /// </summary>
+        /// <returns>A nullable integer that corresponds to the chosen menu option.</returns>
         private static int? HandleOperationTypeSelection()
         {
             int userInput = GetIntInput();
@@ -203,7 +269,14 @@ namespace Banking
 
             decimal amountToDeposit = _Utilities.GetDecimalInput(Console.ReadLine());
 
-            currentAccount.DepositFunds(amountToDeposit);
+            try
+            {
+                currentAccount.DepositFunds(amountToDeposit);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
 
             _Utilities.WriteResultToFile(currentUser, "deposit", accountType, amountToDeposit);
         }
@@ -229,7 +302,14 @@ namespace Banking
 
             decimal amountToWithdraw = _Utilities.GetDecimalInput(Console.ReadLine());
 
-            currentAccount.WithdrawFunds(amountToWithdraw);
+            try
+            {
+                currentAccount.WithdrawFunds(amountToWithdraw);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"ERROR: {ex.Message}");
+            }
 
             _Utilities.WriteResultToFile(currentUser, "withdrawal", accountType, amountToWithdraw);
         }
@@ -275,33 +355,6 @@ namespace Banking
                 Console.WriteLine("Invalid option.");
                 DisplayBankingMenuOptions();
             }
-        }
-
-        private static int GetIntInput()
-        {
-            int userInput;
-
-            try
-            {
-                userInput = int.Parse(Console.ReadLine());
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine(ex.Message);
-                userInput = (int)BankingMenuOptions.invalid;
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine(ex.Message);
-                userInput = (int)BankingMenuOptions.invalid;
-            }
-            catch (OverflowException ex)
-            {
-                Console.WriteLine(ex.Message);
-                userInput = (int)BankingMenuOptions.invalid;
-            }
-
-            return userInput;
         }
 
         /// <summary>

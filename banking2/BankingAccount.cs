@@ -20,7 +20,9 @@ namespace Banking
             defaultValue = 666
         }
 
-        private decimal accountBalance;
+        private const decimal defaultInitialAccountBalance = Decimal.Zero;
+
+        private decimal _accountBalance;
         private readonly int _accountType;
 
         public int AccountType => _accountType;
@@ -30,7 +32,7 @@ namespace Banking
         /// </summary>
         /// <param name="initialBalance">Initial balance for the account.</param>
         /// <param name="accountType">Type of the account</param>
-        public BankingAccount(decimal initialBalance, int accountType)
+        public BankingAccount(int accountType, decimal initialBalance = defaultInitialAccountBalance)
         {
             // Account type is invalid.
             // NOTE: These should currently never occur.
@@ -39,7 +41,7 @@ namespace Banking
                 throw new Exception($"{accountType} is not a valid account type");
             }
 
-            this.accountBalance = initialBalance;
+            this._accountBalance = initialBalance;
             this._accountType = accountType;
         }
 
@@ -49,23 +51,24 @@ namespace Banking
         /// <returns>A decimal value representing the account's current value.</returns>
         public decimal ViewBalance()
         {
-            return accountBalance;
+            return _accountBalance;
         }
 
         /// <summary>
         /// Deposits funds to the account.
         /// <param name="fundsToBeDeposited">The amount of money to be withdrawn.</param>
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public void DepositFunds(decimal fundsToBeDeposited)
         {
-            if (fundsToBeDeposited > 0)
+            if (fundsToBeDeposited > decimal.Zero)
             {
-                accountBalance += fundsToBeDeposited;
+                _accountBalance += fundsToBeDeposited;
                 Console.WriteLine($"{fundsToBeDeposited:c} were successfully deposited to the account");
             }
             else
             {
-                Console.WriteLine("Please specify an amount greater than 0");
+                throw new ArgumentException("Cannot deposit a non-positive amount");
             }
         }
 
@@ -73,20 +76,21 @@ namespace Banking
         /// Withdraws funds from the account.
         /// <param name="fundsToBeWithdrawn">The amount of money to be withdrawn.</param>
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>"
         public void WithdrawFunds(decimal fundsToBeWithdrawn)
         {
-            if (fundsToBeWithdrawn < 0)
+            if (fundsToBeWithdrawn < decimal.Zero)
             {
-                Console.WriteLine("Please specify an amount greater than 0");
+                throw new ArgumentException("Cannot withdraw a negative amount");
             }
-            else if (fundsToBeWithdrawn < accountBalance)
+            else if (fundsToBeWithdrawn < _accountBalance)
             {
-                accountBalance -= fundsToBeWithdrawn;
+                _accountBalance -= fundsToBeWithdrawn;
                 Console.WriteLine($"{fundsToBeWithdrawn:c} were successfully withdrawn from the account.");
             }
             else
             {
-                Console.WriteLine("The amount to be withdrawn cannot exceed the account balance.");
+                throw new ArgumentException("The amount to be withdrawn cannot exceed the account balance.");
             }
         }
     }

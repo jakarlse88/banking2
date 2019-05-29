@@ -1,67 +1,180 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 using Banking;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BankingTests
 {
-    public class BankingAccountTests
+    public class BankingAccountConstructorTests
     {
-        [Fact]
-        public void TestBankingAccountConstructorThrowsWhenPassedInvalidAccountType()
+        [Fact(DisplayName = "BankingAccount ctor throws when passed invalid acc type arg")]
+        public void TestBankingAccountConstructorThrowsWhenPassedInvalidAccountTypeArg()
         {
-            Assert.Throws<Exception>(() => new BankingAccount(0, "invalidType"));
+            // Arrange
+            int invalidAccountType = 3;
+
+            // Act / assert
+            Assert.Throws<Exception>(() => new BankingAccount(invalidAccountType));
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithMixedCaseAccountTypeArgChecking()
+        [Fact(DisplayName = "BankingAccount ctor works as expected with valid acc type arg checking")]
+        public void TestBankingAccountConstructorWorksAsExpectedWithValidAccTypeArgChecking()
         {
-            BankingAccount testAccount = new BankingAccount(0, "cHeCkIng");
+            // Arrange
+            int validAccTypeChecking = (int)BankingAccount.ValidAccountTypes.checking;
+            string expectedAccType = "checking",
+                actualAccType;
 
-            Assert.Equal("checking", testAccount.AccountType);
+            // Act
+            BankingAccount bankingAccount = new BankingAccount(validAccTypeChecking);
+            actualAccType = Enum.GetName(typeof(BankingAccount.ValidAccountTypes),
+                                    bankingAccount.AccountType);
+
+            // Assert
+            Assert.Equal(expectedAccType, actualAccType);
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithLowerCaseAccountTypeArgChecking()
+        [Fact(DisplayName = "BankingAccount ctor works as expected with valid acc type arg savings")]
+        public void TestBankingAccountConstructorWorksAsExpectedWithValidAccTypeArgSavings()
         {
-            BankingAccount testAccount = new BankingAccount(0, "checking");
+            // Arrange
+            int validAccTypeSavings = (int)BankingAccount.ValidAccountTypes.savings;
+            string expectedAccType = "savings",
+                actualAccType;
 
-            Assert.Equal("checking", testAccount.AccountType);
+            // Act
+            BankingAccount bankingAccount = new BankingAccount(validAccTypeSavings);
+
+            actualAccType = Enum.GetName(typeof(BankingAccount.ValidAccountTypes),
+                                    bankingAccount.AccountType);
+
+            // Assert
+            Assert.Equal(expectedAccType, actualAccType);
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithUpperCaseAccountTypeArgChecking()
+        [Fact(DisplayName = "BankingAccount ctor works as expected without optional initialBalance arg")]
+        public void TestBankingAccountConstructorWorksAsExpectedWithoutOptionalInitialBalanceArg()
         {
-            BankingAccount testAccount = new BankingAccount(0, "CHECKING");
+            // Arrange
+            int validAccTypeSavings = (int)BankingAccount.ValidAccountTypes.savings;
+            decimal expectedAccountBalance = Decimal.Zero,
+                actualAccountBalance;
 
-            Assert.Equal("checking", testAccount.AccountType);
+            // Act
+            BankingAccount bankingAccount = new BankingAccount(validAccTypeSavings);
+            actualAccountBalance = bankingAccount.ViewBalance();
+
+            // Assert
+            Assert.Equal(expectedAccountBalance, actualAccountBalance);
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithMixedCaseAccountTypeArgSavings()
+        [Fact(DisplayName = "BankingAccount ctor works as expected with optional initialBalance arg")]
+        public void TestBankingAccountConstructorWorksAsExpectedWithOptionalInitialBalanceArg()
         {
-            BankingAccount testAccount = new BankingAccount(0, "sAvInGs");
+            // Arrange
+            int validAccTypeSavings = (int)BankingAccount.ValidAccountTypes.savings;
+            decimal validInitialBalance = 10000,
+                expectedAccountBalance = 10000,
+                actualAccountBalance;
 
-            Assert.Equal("savings", testAccount.AccountType);
+            // Act
+            BankingAccount bankingAccount =
+                new BankingAccount(validAccTypeSavings, initialBalance: validInitialBalance);
+
+            actualAccountBalance = bankingAccount.ViewBalance();
+
+            // Assert
+            Assert.Equal(expectedAccountBalance, actualAccountBalance);
+        }
+    }
+
+    public class BankingAccountDepositFundsTests
+    {
+        private readonly ITestOutputHelper output;
+
+        private readonly int validAccountTypeSavings = (int)BankingAccount.ValidAccountTypes.savings;
+
+        public BankingAccountDepositFundsTests(ITestOutputHelper output)
+        {
+            this.output = output;
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithLowerCaseAccountTypeArgSavings()
+        [Fact(DisplayName = "DepositFunds works as expected when passed a positive decimal arg")]
+        public void TestDepositFundsWorksAsExpectedPositiveDecimalArg()
         {
-            BankingAccount testAccount = new BankingAccount(0, "savings");
+            // Arrange
+            decimal amountToDepositValid = 1000,
+                expectedBalance = 1000,
+                actualBalance;
 
-            Assert.Equal("savings", testAccount.AccountType);
+            BankingAccount bankingAccount = new BankingAccount(validAccountTypeSavings);
+
+            // Act
+            bankingAccount.DepositFunds(amountToDepositValid);
+            actualBalance = bankingAccount.ViewBalance();
+
+            // Assert
+            Assert.Equal(expectedBalance, actualBalance);
         }
 
-        [Fact]
-        public void TestBankingAccountConstructorPassesWithUpperCaseAccountTypeArgSavings()
+        [Fact(DisplayName = "DepositFunds throws ArgumentException when passed a non-positive decimal arg")]
+        public void TestDepositFundsThrowsArgumentExceptionNonPositiveDecimalArg()
         {
-            BankingAccount testAccount = new BankingAccount(0, "SAVINGS");
+            // Arrange
+            decimal amountToDepositInvalid = -1000;
 
-            Assert.Equal("savings", testAccount.AccountType);
+            BankingAccount bankingAccount = new BankingAccount(validAccountTypeSavings);
+
+            // Act / assert
+            Assert.Throws<ArgumentException>(() => bankingAccount.DepositFunds(amountToDepositInvalid));
+        }
+
+        [Fact(DisplayName = "WithdrawFunds works as expected when passed a positive decimal arg that is lower than current account balance")]
+        public void TestWithdrawFundsWorksAsExpectedPositiveDecimalArgLowerThanCurrentBalance()
+        {
+            // Arrange
+            decimal initialAccountBalance = 10000,
+                amountToWithdraw = 1000,
+                expectedBalance = initialAccountBalance - amountToWithdraw,
+                actualBalance;
+
+            BankingAccount bankingAccount =
+                new BankingAccount(validAccountTypeSavings, initialBalance: initialAccountBalance);
+
+            // Act
+            bankingAccount.WithdrawFunds(amountToWithdraw);
+            actualBalance = bankingAccount.ViewBalance();
+
+            // Assert
+            Assert.Equal(expectedBalance, actualBalance);
+        }
+
+        [Fact(DisplayName = "WithdrawFunds throws ArgumentException when passed a negative decimal arg")]
+        public void TestWithdrawFundsThrowsNegativeDecimalArg()
+        {
+            // Arrange
+            decimal initialAccountBalance = 10000,
+            amountToWithdrawInvalid = -1000;
+
+            BankingAccount bankingAccount =
+                new BankingAccount(validAccountTypeSavings, initialBalance: initialAccountBalance);
+
+            // Act / assert
+            Assert.Throws<ArgumentException>(() => bankingAccount.WithdrawFunds(amountToWithdrawInvalid));
+        }
+
+        [Fact(DisplayName = "WithdrawFunds throws ArgumentException when passed a positive decimal arg that exceeds account balance")]
+        public void TestWithdrawFundsThrowsPositiveDecimalArgExceedsBalance()
+        {
+            // Arrange
+            decimal initialAccountBalance = 500,
+            amountToWithdraw = 1000;
+
+            BankingAccount bankingAccount =
+                new BankingAccount(validAccountTypeSavings, initialBalance: initialAccountBalance);
+
+            // Act / assert
+            Assert.Throws<ArgumentException>(() => bankingAccount.WithdrawFunds(amountToWithdraw));
         }
     }
 }
-

@@ -73,3 +73,8 @@ karlsen, jon - #6689I
 j, j - #3344 SAVINGS deposit Transaction amount: $1231923
 j, j - #3344I
 j, j - #3344I
+karlsen, jon - #4357I
+karlsen, jon - #4357I
+karlsen, jon - #4357 CHECKING deposit Transaction amount: $123
+karlsen, jon - #4357I
+karlsen, jon - #4357 CHECKING deposit Transaction amount: $-12312

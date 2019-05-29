@@ -31,8 +31,8 @@ namespace Banking
                 (int)BankingAccount.ValidAccountNumberConfig.defaultValue;
             this._firstName = firstName;
             this._lastName = lastName;
-            this._checkingAccount = new BankingAccount(0, (int)BankingAccount.ValidAccountTypes.checking);
-            this._savingsAccount = new BankingAccount(0, (int)BankingAccount.ValidAccountTypes.savings);
+            this._checkingAccount = new BankingAccount((int)BankingAccount.ValidAccountTypes.checking);
+            this._savingsAccount = new BankingAccount((int)BankingAccount.ValidAccountTypes.savings);
         }
 
         /// <summary>
@@ -88,16 +88,6 @@ namespace Banking
         public string LastName
         {
             get { return _lastName; }
-        }
-
-        public BankingAccount CheckingAccount
-        {
-            get { return _checkingAccount; }
-        }
-
-        public BankingAccount SavingsAccount
-        {
-            get { return _savingsAccount; }
         }
     }
 }
