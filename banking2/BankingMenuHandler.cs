@@ -100,8 +100,7 @@ namespace Banking
                 currentOperationType = SelectOperationType();
             }
 
-            string currentOperationTypeName = Enum.GetName(typeof(ValidBankingOperations), currentOperationType);
-            Console.WriteLine($"{currentOperationTypeName} is selected.");
+            Console.WriteLine($"{operationTypeOptions[(int)currentOperationType]} is selected.");
 
             switch (currentOperationType)
             {
