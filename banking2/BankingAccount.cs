@@ -81,7 +81,7 @@ namespace Banking
             {
                 throw new ArgumentException("Cannot withdraw a negative amount");
             }
-            else if (fundsToBeWithdrawn < _accountBalance)
+            else if (fundsToBeWithdrawn <= _accountBalance)
             {
                 _accountBalance -= fundsToBeWithdrawn;
                 Console.WriteLine($"{fundsToBeWithdrawn:c} were successfully withdrawn from the account.");
