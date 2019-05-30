@@ -242,7 +242,7 @@ namespace Banking
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account has a balance of {currentAccount.ViewBalance():c}");
+            Console.WriteLine($"{currentUser.LastName}, {currentUser.FirstName}'s {Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType)} account has a balance of {currentAccount.ViewBalance():c}");
             Console.WriteLine("");
 
             _Utilities.WriteResultToFile(currentUser, "I");
@@ -264,7 +264,7 @@ namespace Banking
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s {currentAccount.AccountType} account. Please specify an amount:");
+            Console.WriteLine($"Depositing to {currentUser.LastName}, {currentUser.FirstName}'s {Enum.GetName(typeof(BankingAccount.ValidAccountTypes), accountType)} account. Please specify an amount:");
             Console.Write("$");
 
             try
