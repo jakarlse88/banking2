@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "banking", "banking2\banking.csproj", "{0826C1DD-CDEB-4943-863E-51DB1E3E793C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingTests", "BankingTests\BankingTests.csproj", "{2A0217AA-717B-48D1-A220-6235C12AAAAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankingTests", "BankingTests\BankingTests.csproj", "{2A0217AA-717B-48D1-A220-6235C12AAAAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0826C1DD-CDEB-4943-863E-51DB1E3E793C} = {0826C1DD-CDEB-4943-863E-51DB1E3E793C}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1941269F-8550-4FAD-B546-3A96372263A5}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Global
